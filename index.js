@@ -44,8 +44,7 @@ class Client {
 
   build_call(method, endpoint, callback, options={}) {
     if(this.access_key !== undefined && !('headers' in options))
-      options["headers"] = { 'Hydrus-Client-API-Access-Key': this.access_key }
-    
+      options["headers"] = { 'Hydrus-Client-API-Access-Key': this.access_key }    
     request({
       method: method,
       uri: _api["BASE"] + endpoint,
@@ -87,8 +86,6 @@ class Client {
     var options = {};
     if(key != null)
       options["headers"] = {'Hydrus-Client-API-Access-Key': key};
-    
-    //console.log(options["headers"])
     this.build_call('GET', _api["VERIFY_KEY"], function(err, body) {
       if(err) {
         console.log(`API Error: ${JSON.stringify(err)}`)

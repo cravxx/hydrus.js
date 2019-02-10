@@ -8,4 +8,4 @@ node.js module for interacting with the hydrus network api
 
     npm test
     
-   and supply a Access key when prompted
+   and supply an Access key when prompted
