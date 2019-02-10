@@ -17,76 +17,132 @@ const _api = {
   "ADD_FILE": ""
 }
 
+const PERMISSIONS = {
+  IMPORT_FILES: 0,
+  ADD_TAGS: 1,
+  IMPORT_URLS: 2,
+  SEARCH_FILES: 3
+}
+
+const isJSON = (str, callback) => {
+  try {
+      callback (JSON.parse(str));
+  } catch (e) {
+      callback (null);
+  }
+}
+
 class Client {
   
-  constructor(access_key){
+  constructor(access_key=undefined){
     this.access_key = access_key;
   }
 
+  get PERMISSIONS() {
+    return PERMISSIONS;
+  }
+
   build_call(method, endpoint, callback, options={}) {
-    options["headers"] = { 'Hydrus-Client-API-Access-Key': this.access_key }
+    if(this.access_key !== undefined && !('headers' in options))
+      options["headers"] = { 'Hydrus-Client-API-Access-Key': this.access_key }
+    
     request({
       method: method,
       uri: _api["BASE"] + endpoint,
       headers: options["headers"],
-      qs: options["params"],
+      qs: options["queries"],
       json: options["json"]     
     }, function (error, response, body) {
-      if (error || response.statusCode !== 200) {
-        return callback(error || {statusCode: response.statusCode});
+      var err = {
+        'error': error,
+        'status_code' : response.statusCode,
+        'body' : body
       }
-      callback(null, body);  
+      callback(error || response.statusCode != 200 ? err : null, body);
     });
   }
 
-  verify_access_key(url) {
-    this.build_call('GET', _api["VERIFY_KEY"], function(err, body) {
-      if (err) {
-        console.log(`error: ${err}`);
-      } else {
-        console.log(body); 
-        return body;
-      }
-    });
-  }
-
-  get_url_info(url) {
+  get_permissions(name, permissions, callback) {
     var options = {};
-    options["params"] = {'url': url};
-    this.build_call('GET', _api["URL_INFO"], function(err, body) {
-      if (err) {
-        console.log(`error: ${err}`);
+    options["queries"] = {
+      'name': name,
+      'basic_permissions': JSON.stringify(permissions)
+    };
+    this.build_call('GET', _api["REQUEST_PERMISSIONS"], function(err, body) {
+      if(err) {
+        console.log(`API Error: ${JSON.stringify(err)}`)
       } else {
-        console.log(body); 
-        return body;
-      }
+        isJSON(body, function(result) {          
+          if(result != null){
+            callback(result)
+          }else{
+            callback(body)
+          }
+        });
+      }    
     }, options);
   }
 
-  add_url(url) {
+  verify_access_key(callback, key=null) {
+    var options = {};
+    if(key != null)
+      options["headers"] = {'Hydrus-Client-API-Access-Key': key};
+    
+    //console.log(options["headers"])
+    this.build_call('GET', _api["VERIFY_KEY"], function(err, body) {
+      if(err) {
+        console.log(`API Error: ${JSON.stringify(err)}`)
+      } else {
+        isJSON(body, function(result) {          
+          if(result != null){
+            callback(result)
+          }else{
+            callback(body)
+          }
+        });
+      }    
+    }, options);
+  }
+
+  get_url_info(url, callback) {
+    var options = {};
+    options["queries"] = {'url': url};
+    this.build_call('GET', _api["URL_INFO"], function(err, body) {
+      if(err) {
+        console.log(`API Error: ${JSON.stringify(err)}`)
+      } else {
+        isJSON(body, function(result) {          
+          if(result != null){
+            callback(result)
+          }else{
+            callback(body)
+          }
+        });
+      }      
+    }, options);
+  }
+
+  add_url(url, callback) {
     var options = {};
     options["json"] = {'url': url};
     this.build_call('POST', _api["ADD_URL"], function(err, body) {
-      if (err) {
-        console.log(`error: ${err}`);
+      if(err) {
+        console.log(`API Error: ${JSON.stringify(err)}`)
       } else {
-        console.log(body); 
-        return body;
-      }
+        callback(body)
+      }    
     }, options);
   }
 
-  api_version() {
+  api_version(callback) {
     this.build_call('GET', _api["API_VERSION"], function(err, body) {
-      if (err) {
-        console.log(`error: ${err}`);
+      if(err) {
+        console.log(`API Error: ${JSON.stringify(err)}`)
       } else {
-        console.log(body); 
-        return body;
-      }
+        callback(body)
+      }    
     });
   }
 
 }
-
 module.exports=Client;
