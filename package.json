@@ -1,0 +1,14 @@
+{
+  "name": "hydrus.js",
+  "version": "1.0.0",
+  "description": "hydrus api",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test"
+  },
+  "author": "cravxx",
+  "license": "ISC",
+  "dependencies": {
+    "request": "^2.88.0"
+  }
+}
