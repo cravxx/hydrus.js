@@ -1,20 +1,30 @@
 "use strict";
 
 const request = require('request');
+const rp = require('request-promise');
 
-const _api = {
-  "BASE": "http://127.0.0.1:45869",
-  "API_VERSION": "/api_version",
-  "VERIFY_KEY": "/verify_access_key",
-  "URL_INFO": "/add_urls/get_url_info",
-  "ADD_URL": "/add_urls/add_url",
-  "REQUEST_PERMISSIONS": "/request_new_permissions",
-  "FILE_SEARCH": "",
-  "FILE_METADATA": "",
-  "FILE": "",
-  "THUMBNAIL": "",
-  "ADD_TAGS": "",
-  "ADD_FILE": ""
+const default_api_address = "http://127.0.0.1:45869"
+
+const ENDPOINTS = {
+  API_VERSION: "/api_version",
+  VERIFY_KEY: "/verify_access_key",
+  URL_INFO: "/add_urls/get_url_info",
+  ADD_URL: "/add_urls/add_url",
+  REQUEST_PERMISSIONS: "/request_new_permissions",
+  FILE_SEARCH: "",
+  FILE_METADATA: "",
+  FILE: "",
+  THUMBNAIL: "",
+  ADD_TAGS: "",
+  ADD_FILE: ""
+}
+
+const URLTYPE = {
+  POST_URL: 0,
+  FILE_URL: 2,
+  GALLERY_URL: 3,
+  WATCHABLE_URL: 4,
+  UNKNOWN_URL: 5
 }
 
 const PERMISSIONS = {
@@ -33,9 +43,17 @@ const isJSON = (str, callback) => {
 }
 
 module.exports = class Client {
-  
-  constructor(access_key=undefined){
-    this.access_key = access_key;
+
+  constructor({
+    address = default_api_address, 
+    key = undefined
+  }){
+    this.access_key = key;
+    this.address = address;
+  }
+
+  get URLTYPE() {
+    return URLTYPE;
   }
 
   get PERMISSIONS() {
@@ -45,19 +63,16 @@ module.exports = class Client {
   build_call(method, endpoint, callback, options={}) {
     if(this.access_key !== undefined && !('headers' in options))
       options["headers"] = { 'Hydrus-Client-API-Access-Key': this.access_key }    
-    request({
+    rp({
       method: method,
-      uri: _api["BASE"] + endpoint,
+      uri: this.address + endpoint,
       headers: options["headers"],
       qs: options["queries"],
       json: options["json"]     
-    }, function (error, response, body) {
-      var err = {
-        'error': error,
-        'status_code' : response.statusCode,
-        'body' : body
-      }
-      callback(error || response.statusCode != 200 ? err : null, body);
+    }).then(function (response) {
+      callback(null, response)
+    }).catch(function (err) {
+      callback(err, null);
     });
   }
 
@@ -67,7 +82,7 @@ module.exports = class Client {
       'name': name,
       'basic_permissions': JSON.stringify(permissions)
     };
-    this.build_call('GET', _api["REQUEST_PERMISSIONS"], function(err, body) {
+    this.build_call('GET', ENDPOINTS.REQUEST_PERMISSIONS, function(err, body) {
       if(err) {
         console.log(`API Error: ${JSON.stringify(err)}`)
       } else {
@@ -83,10 +98,8 @@ module.exports = class Client {
   }
 
   verify_access_key(callback, key=null) {
-    var options = {};
-    if(key != null)
-      options["headers"] = {'Hydrus-Client-API-Access-Key': key};
-    this.build_call('GET', _api["VERIFY_KEY"], function(err, body) {
+    var options = key != null ? {"headers" : {'Hydrus-Client-API-Access-Key': key}} : {};
+    this.build_call('GET', ENDPOINTS.VERIFY_KEY, function(err, body) {
       if(err) {
         console.log(`API Error: ${JSON.stringify(err)}`)
       } else {
@@ -104,7 +117,7 @@ module.exports = class Client {
   get_url_info(url, callback) {
     var options = {};
     options["queries"] = {'url': url};
-    this.build_call('GET', _api["URL_INFO"], function(err, body) {
+    this.build_call('GET', ENDPOINTS.URL_INFO, function(err, body) {
       if(err) {
         console.log(`API Error: ${JSON.stringify(err)}`)
       } else {
@@ -122,7 +135,7 @@ module.exports = class Client {
   add_url(url, callback) {
     var options = {};
     options["json"] = {'url': url};
-    this.build_call('POST', _api["ADD_URL"], function(err, body) {
+    this.build_call('POST', ENDPOINTS.ADD_URL, function(err, body) {
       if(err) {
         console.log(`API Error: ${JSON.stringify(err)}`)
       } else {
@@ -132,7 +145,7 @@ module.exports = class Client {
   }
 
   api_version(callback) {
-    this.build_call('GET', _api["API_VERSION"], function(err, body) {
+    this.build_call('GET', ENDPOINTS.API_VERSION, function(err, body) {
       if(err) {
         console.log(`API Error: ${JSON.stringify(err)}`)
       } else {
@@ -140,5 +153,4 @@ module.exports = class Client {
       }    
     });
   }
-
 }
