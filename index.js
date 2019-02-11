@@ -1,6 +1,5 @@
 "use strict";
 
-const request = require('request');
 const rp = require('request-promise');
 
 const default_api_address = "http://127.0.0.1:45869"
@@ -76,7 +75,7 @@ module.exports = class Client {
 
   build_call(method, endpoint, callback, options={}) {
     if(this.access_key != '' && !('headers' in options))
-      options["headers"] = { 'Hydrus-Client-API-Access-Key': this.access_key }    
+      options["headers"] = { 'Hydrus-Client-API-Access-Key': this.access_key }
     rp({
       method: method,
       uri: this.address + endpoint,

@@ -10,6 +10,7 @@ readline.question(`Enter an api access key to perform tests: `, (key) => {
   var c = new hydrus_api({key: "eb79e9e2a40dddd159299408db072ed6e6573d488b50db499f70a211ba1fa1da"})
   var P = c.PERMISSIONS
   var U = c.URLTYPE
+  var I = c.IMPORT_STATUS
 
   // new 
   // c.get_tag_services(function(response) {
@@ -24,9 +25,10 @@ readline.question(`Enter an api access key to perform tests: `, (key) => {
     console.log(response)
   })
 
-  c.verify_access_key(function(response) {
-    console.log(response)
-  })
+  // backend on these seems to be not working
+  // c.verify_access_key(function(response) {
+  //   console.log(response)
+  // })
 
   // c.verify_access_key(function(response) {
   //   console.log(response)
