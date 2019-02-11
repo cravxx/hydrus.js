@@ -11,13 +11,22 @@ readline.question(`Enter an api access key to perform tests: `, (key) => {
   var P = c.PERMISSIONS
   var U = c.URLTYPE
 
+  // new 
+  // c.get_tag_services(function(response) {
+  //   console.log(response)
+  // })
+
+  // c.get_url_files("https://images-ext-2.discordapp.net/external/OFQgQQfZdll80-opJXFOKPYCG_32rjT8eQvvYWE-Zxs/http/i.4cdn.org/g/1549666714889.jpg", function(response) {
+  //   console.log(response)
+  // })
+
   c.api_version(function(response) {
     console.log(response)
   })
 
-  // c.verify_access_key(function(response) {
-  //   console.log(response)
-  // })
+  c.verify_access_key(function(response) {
+    console.log(response)
+  })
 
   // c.verify_access_key(function(response) {
   //   console.log(response)
