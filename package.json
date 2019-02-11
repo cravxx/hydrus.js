@@ -4,6 +4,7 @@
   "description": "hydrus api",
   "main": "index.js",
   "scripts": {
+    "pretest": "eslint --ignore-path .gitignore index.js test.js",
     "test": "node test"
   },
   "author": "cravxx",
@@ -11,5 +12,9 @@
   "dependencies": {
     "request": "^2.88.0",
     "request-promise": "^4.2.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.13.0",
+    "eslint-config-strongloop": "^2.1.0"
   }
 }

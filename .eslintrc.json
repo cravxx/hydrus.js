@@ -1,0 +1,14 @@
+{
+  "extends": "strongloop",
+  "rules": {
+    "max-len" : [2, 150, 4]
+  },
+  
+  "parserOptions": {
+    "sourceType": "module"
+  },
+
+  "env": {
+    "es6": true
+  }
+}
