@@ -32,7 +32,7 @@ const isJSON = (str, callback) => {
   }
 }
 
-class Client {
+module.exports = class Client {
   
   constructor(access_key=undefined){
     this.access_key = access_key;
@@ -142,4 +142,3 @@ class Client {
   }
 
 }
-module.exports=Client;
