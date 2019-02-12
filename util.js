@@ -6,13 +6,6 @@ class GenericApiError extends Error {
   }
 }
 
-class ClientApiWindowNotOpen extends GenericApiError {
-  constructor(query, apierror) {
-    super('Client API Window is not open!');
-    this.data = query;
-  }
-}
-
 const isJSON = (str, callback) => {
   try {
     callback(JSON.parse(str));
@@ -21,4 +14,4 @@ const isJSON = (str, callback) => {
   }
 };
 
-module.exports = { GenericApiError, ClientApiWindowNotOpen, isJSON };
+module.exports = { GenericApiError, isJSON };
