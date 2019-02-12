@@ -36,9 +36,9 @@ const URL_TYPE = {
 };
 
 const PERMISSIONS = {
-  IMPORT_FILES: 0,
-  ADD_TAGS: 1,
-  IMPORT_URLS: 2,
+  IMPORT_URLS: 0,
+  IMPORT_FILES: 1,
+  ADD_TAGS: 2,
   SEARCH_FILES: 3,
 };
 
