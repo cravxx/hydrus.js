@@ -1,4 +1,5 @@
 const rp = require('request-promise');
+const {GenericApiError, isJSON} = require('./util.js');
 
 const default_api_address = 'http://127.0.0.1:45869';
 
@@ -41,14 +42,6 @@ const PERMISSIONS = {
   SEARCH_FILES: 3,
 };
 
-const isJSON = (str, callback) => {
-  try {
-    callback(JSON.parse(str));
-  } catch (e) {
-    callback(null);
-  }
-};
-
 module.exports = class Client {
   constructor(options) {
     this.access_key = !('key' in options) ? '' : options['key'];
@@ -77,19 +70,19 @@ module.exports = class Client {
 
   build_call(method, endpoint, callback, options = {}) {
     if (this.access_key !== '' && !('headers' in options))
-      options['headers'] = {'Hydrus-Client-API-Access-Key': this.access_key};
+      options.headers = {'Hydrus-Client-API-Access-Key': this.access_key};
     rp({
       method: method,
       uri: this.address + endpoint,
-      headers: options['headers'],
-      qs: options['queries'],
-      json: options['json'],
+      headers: options.headers,
+      qs: options.queries,
+      json: options.json,
     })
-      .then(function(response) {
-        callback(null, response);
+      .then((response) => {
+        callback(response);        
       })
-      .catch(function(err) {
-        callback(err, null);
+      .catch((err) => {
+        throw new GenericApiError(err);
       });
   }
 
@@ -102,29 +95,24 @@ module.exports = class Client {
    * @param {*} callback returns response
    */
   request_new_permissions(name, permissions, callback) {
-    var options = {
-      queries: {
-        name: name,
-        basic_permissions: JSON.stringify(permissions),
-      },
-    };
     this.build_call(
       'GET',
       ENDPOINTS.REQUEST_PERMISSIONS,
-      function(err, body) {
-        if (err) {
-          console.log(`API Error: ${JSON.stringify(err)}`);
-        } else {
-          isJSON(body, function(result) {
-            if (result != null) {
-              callback(result);
-            } else {
-              callback(body);
-            }
-          });
-        }
+      (body) => {
+        isJSON(body, (result) => {
+          if (result != null) {
+            callback(result);
+          } else {
+            callback(body);
+          }
+        });
       },
-      options
+      {
+        queries: {
+          name: name,
+          basic_permissions: JSON.stringify(permissions),
+        },
+      }
     );
   }
 
@@ -135,22 +123,18 @@ module.exports = class Client {
    */
   verify_access_key(callback, key = '') {
     var options =
-      key !== '' ? {headers: {'Hydrus-Client-API-Access-Key': key}} : {};
+      (key !== '') ? {headers: {'Hydrus-Client-API-Access-Key': key}} : {};
     this.build_call(
       'GET',
       ENDPOINTS.VERIFY_KEY,
-      function(err, body) {
-        if (err) {
-          console.log(`API Error: ${JSON.stringify(err)}`);
-        } else {
-          isJSON(body, function(result) {
-            if (result != null) {
-              callback(result);
-            } else {
-              callback(body);
-            }
-          });
-        }
+      (body) => {
+        isJSON(body, (result) => {
+          if (result != null) {
+            callback(result);
+          } else {
+            callback(body);
+          }
+        });
       },
       options
     );
@@ -162,11 +146,11 @@ module.exports = class Client {
    * @param {*} callback returns response
    */
   get_tag_services(callback) {
-    this.build_call('GET', ENDPOINTS.TAG_SERVICES, function(err, body) {
-      if (err) {
-        console.log(`API Error: ${JSON.stringify(err)}`);
-      } else {
-        isJSON(body, function(result) {
+    this.build_call(
+      'GET', 
+      ENDPOINTS.TAG_SERVICES, 
+      (body) => {
+        isJSON(body, (result) => {
           if (result != null) {
             callback(result);
           } else {
@@ -174,7 +158,7 @@ module.exports = class Client {
           }
         });
       }
-    });
+    );
   }
 
   /**
@@ -184,25 +168,23 @@ module.exports = class Client {
    * @param {*} callback returns response
    */
   get_url_files(url, callback) {
-    var options = {};
-    options['queries'] = {url: url};
     this.build_call(
       'GET',
       ENDPOINTS.URL_INFO,
-      function(err, body) {
-        if (err) {
-          console.log(`API Error: ${JSON.stringify(err)}`);
-        } else {
-          isJSON(body, function(result) {
-            if (result != null) {
-              callback(result);
-            } else {
-              callback(body);
-            }
-          });
-        }
+      (body) => {
+        isJSON(body, (result) => {
+          if (result != null) {
+            callback(result);
+          } else {
+            callback(body);
+          }
+        });
       },
-      options
+      {
+        queries: {
+          url: url,
+        },
+      }
     );
   }
 
@@ -212,25 +194,23 @@ module.exports = class Client {
    * @param {*} callback returns response
    */
   get_url_info(url, callback) {
-    var options = {};
-    options['queries'] = {url: url};
     this.build_call(
       'GET',
       ENDPOINTS.URL_INFO,
-      function(err, body) {
-        if (err) {
-          console.log(`API Error: ${JSON.stringify(err)}`);
-        } else {
-          isJSON(body, function(result) {
-            if (result != null) {
-              callback(result);
-            } else {
-              callback(body);
-            }
-          });
-        }
+      (body) => {
+        isJSON(body, (result) => {
+          if (result != null) {
+            callback(result);
+          } else {
+            callback(body);
+          }
+        });
       },
-      options
+      {
+        queries: {
+          url: url,
+        },
+      }
     );
   }
 
@@ -242,19 +222,23 @@ module.exports = class Client {
    * @param {*} callback returns response
    */
   add_file(file, callback) {
-    var options = {};
-    options['json'] = {path: file};
     this.build_call(
       'POST',
       ENDPOINTS.ADD_FILE,
-      function(err, body) {
-        if (err) {
-          console.log(`API Error: ${JSON.stringify(err)}`);
-        } else {
-          callback(body);
-        }
+      (body) => {
+        isJSON(body, (result) => {
+          if (result != null) {
+            callback(result);
+          } else {
+            callback(body);
+          }
+        });
       },
-      options
+      {
+        json: {
+          path: file,
+        },
+      }
     );
   }
 
@@ -265,19 +249,23 @@ module.exports = class Client {
    * @param {*} callback returns response
    */
   add_url(url, callback) {
-    var options = {};
-    options['json'] = {url: url};
     this.build_call(
       'POST',
       ENDPOINTS.ADD_URL,
-      function(err, body) {
-        if (err) {
-          console.log(`API Error: ${JSON.stringify(err)}`);
-        } else {
-          callback(body);
-        }
+      (body) => {
+        isJSON(body, (result) => {
+          if (result != null) {
+            callback(result);
+          } else {
+            callback(body);
+          }
+        });
       },
-      options
+      {
+        json: {
+          url: url,
+        },
+      }
     );
   }
 
@@ -286,12 +274,10 @@ module.exports = class Client {
    * @param {*} callback returns response
    */
   api_version(callback) {
-    this.build_call('GET', ENDPOINTS.API_VERSION, function(err, body) {
-      //  will return json in the future
-      if (err) {
-        console.log(`API Error: ${JSON.stringify(err)}`);
-      } else {
-        isJSON(body, function(result) {
+    this.build_call(
+      'GET', 
+      ENDPOINTS.API_VERSION, (body) => {
+        isJSON(body, (result) => {
           if (result != null) {
             callback(result);
           } else {
@@ -299,6 +285,6 @@ module.exports = class Client {
           }
         });
       }
-    });
+    );
   }
 };

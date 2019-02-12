@@ -23,7 +23,7 @@ readline.question('Enter an api access key to perform tests: ', key => {
   //   console.log(response)
   // })
 
-  C.api_version(function(response) {
+  C.api_version((response) => {
     console.log(response);
   });
 
@@ -38,14 +38,14 @@ readline.question('Enter an api access key to perform tests: ', key => {
 
   C.add_url(
     'https://images-ext-2.discordapp.net/external/OFQgQQfZdll80-opJXFOKPYCG_32rjT8eQvvYWE-Zxs/http/i.4cdn.org/g/1549666714889.jpg',
-    function(response) {
+    (response) => {
       console.log(response);
     }
   );
 
   C.get_url_info(
     'https://images-ext-2.discordapp.net/external/OFQgQQfZdll80-opJXFOKPYCG_32rjT8eQvvYWE-Zxs/http/i.4cdn.org/g/1549666714889.jpg',
-    function(response) {
+    (response) => {
       console.log(response);
     }
   );
@@ -53,10 +53,15 @@ readline.question('Enter an api access key to perform tests: ', key => {
   C.request_new_permissions(
     'new perms',
     [P.ADD_TAGS, P.IMPORT_URLS, P.IMPORT_FILES, P.SEARCH_FILES],
-    function(response) {
+    (response) => {
       console.log(response);
     }
   );
+
+  C.api_version((response) => {
+    console.log(response);
+  });
+
 
   readline.close();
 });
