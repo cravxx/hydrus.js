@@ -10,18 +10,20 @@ currently implements [all api functions](https://hydrusnetwork.github.io/hydrus/
 | Function | Implemented? |
 | --- | --- |
 | API_VERSION | ✔️ |
-| VERIFY_KEY | ✔️ |
+| VERIFY_KEY | api server need bugfix |
 | URL_INFO | ✔️ |
 | ADD_URL | ✔️ |
 | REQUEST_PERMISSIONS | ✔️ |
 
 ## example
 ```javascript
-const hydrus_api = require("hydrus.js")
-var client = new hydrus_api('eb79e9e2a40dddd159299408db072ed6e6573d488b50db499f70a211ba1fa1da')
-client.verify_access_key(function(response) {
-    console.log(response)
-})
+const hydrusjs = require("hydrus.js")
+var client = new hydrusjs({
+  key: 'eb79e9e2a40dddd159299408db072ed6e6573d488b50db499f70a211ba1fa1da',
+});
+client.api_version((response) => {
+  console.log(response); // returns 1
+});
 ```
     
 
@@ -29,6 +31,7 @@ client.verify_access_key(function(response) {
 
 ```bash
 npm test
+npm run mocha
 ```
 
 and supply a client access key when prompted

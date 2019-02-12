@@ -58,10 +58,5 @@ readline.question('Enter an api access key to perform tests: ', key => {
     }
   );
 
-  C.api_version((response) => {
-    console.log(response);
-  });
-
-
   readline.close();
 });
