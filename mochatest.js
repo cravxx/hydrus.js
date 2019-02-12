@@ -5,7 +5,7 @@ var { assert } = chai;
 var Hydrus_Api = require('./index.js');
 
 var C = new Hydrus_Api({
-  key: 'eb79e9e2a40dddd159299408db072ed6e6573d488b50db499f70a211ba1fa1da',
+  key: 'your api key',
 });
 
 describe('test api calls', function() {

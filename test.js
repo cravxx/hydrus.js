@@ -7,7 +7,7 @@ const readline = require('readline').createInterface({
 
 readline.question('Enter an api access key to perform tests: ', key => {
   var C = new Hydrus_Api({
-    key: 'eb79e9e2a40dddd159299408db072ed6e6573d488b50db499f70a211ba1fa1da',
+    key: key,
   });
   var P = C.PERMISSIONS;
   // var U = C.URLTYPE;
