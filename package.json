@@ -4,12 +4,15 @@
   "description": "hydrus api",
   "main": "index.js",
   "scripts": {
-    "pretest": "eslint --ignore-path .gitignore index.js test.js",
+    "pretest": "eslint --ignore-path .gitignore index.js test.js mochatest.js",
+    "mocha": "node_modules/.bin/mocha --reporter spec mochatest.js",
     "test": "node test"
   },
   "author": "cravxx",
   "license": "MIT",
   "dependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.2"
   },

@@ -28,13 +28,13 @@ readline.question('Enter an api access key to perform tests: ', key => {
   });
 
   // backend on these seems to be not working
-  // c.verify_access_key(function(response) {
-  //   console.log(response)
-  // })
+  // C.verify_access_key(function(response) {
+  //   console.log(response);
+  // });
 
-  // c.verify_access_key(function(response) {
-  //   console.log(response)
-  // }, "f03b3d78c04f72ef18807d57f85fce71016c356c15b59d98bb76bc5870ec8bef")
+  // C.verify_access_key(function(response) {
+  //   console.log(response);
+  // }, 'f03b3d78c04f72ef18807d57f85fce71016c356c15b59d98bb76bc5870ec8bef');
 
   C.add_url(
     'https://images-ext-2.discordapp.net/external/OFQgQQfZdll80-opJXFOKPYCG_32rjT8eQvvYWE-Zxs/http/i.4cdn.org/g/1549666714889.jpg',
@@ -50,7 +50,7 @@ readline.question('Enter an api access key to perform tests: ', key => {
     }
   );
 
-  C.get_permissions(
+  C.request_new_permissions(
     'new perms',
     [P.ADD_TAGS, P.IMPORT_URLS, P.IMPORT_FILES, P.SEARCH_FILES],
     function(response) {
