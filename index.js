@@ -1,7 +1,9 @@
 const rp = require('request-promise');
-const { GenericApiError } = require('./util.js');
+const { GenericApiError, ApiVersionMismatchError } = require('./util.js');
 
 const default_api_address = 'http://127.0.0.1:45869';
+
+const api_version = 1;
 
 const ENDPOINTS = {
   API_VERSION: '/api_version',
@@ -46,7 +48,16 @@ const PERMISSIONS = {
 module.exports = class Client {
   constructor(options) {
     this.access_key = !('key' in options) ? '' : options['key'];
-    this.address = !('address' in options) ? this.default_api_address : options['address'];    
+    this.address = !('address' in options) ? this.default_api_address : options['address'];
+
+    this.api_version((res) => {
+      if (res.version > api_version) {
+        throw new ApiVersionMismatchError(`You are using an older version of hydrus.js (${api_version}) that may not work with the newer api (${res.version}). Please check if there is an update available!`);
+      } else if (api_version > res.version) {
+        throw new ApiVersionMismatchError(`This version of hydrus.js (${api_version}) is built for a newer version of the api than what your hydrus installation is currently using (${res.version}). Please update your hydrus.`);
+      }
+    });
+
   }
 
   get default_api_address() {
@@ -92,7 +103,10 @@ module.exports = class Client {
         callback(response);
       })
       .catch((err) => {
-        throw new GenericApiError(err);
+        if (err instanceof ApiVersionMismatchError)
+          console.error(err.message);
+        else
+          console.error(new GenericApiError(err));
       });
   }
 

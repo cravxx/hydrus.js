@@ -1,7 +1,7 @@
 {
   "extends": "strongloop",
   "rules": {
-    "max-len" : [2, 150, 4],
+    "max-len" : [2, 250, 4],
     "no-trailing-spaces": 1,
     "no-undef": 1
   },
