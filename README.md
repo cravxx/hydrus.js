@@ -5,7 +5,7 @@
 
 node.js module for interacting with the hydrus network api
 
-currently implements [all api functions](https://hydrusnetwork.github.io/hydrus/help/client_api.html) )
+currently implements [all api functions](https://hydrusnetwork.github.io/hydrus/help/client_api.html)
 
 | Function | Implemented? |
 | --- | --- |
