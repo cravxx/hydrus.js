@@ -51,8 +51,8 @@ readline.question('Enter an api access key to perform tests: ', key => {
   fs.readFile('example path', function(err, data) {
     if (err) throw err;
 
-    C.add_file_bytes(
-      data,
+    C.add_file(
+      {bytes: data},
       (response) => {
         console.log(response);
         console.log('\n\n');
@@ -60,8 +60,8 @@ readline.question('Enter an api access key to perform tests: ', key => {
     );
   });
 
-  C.add_file_path(
-    'example path',
+  C.add_file(
+    {path: 'example path'},
     (response) => {
       console.log(response);
       console.log('\n\n');

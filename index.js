@@ -150,7 +150,6 @@ module.exports = class Client {
 
   /**
    * Ask the client about its tag services
-   * __(not yet enabled)__
    * @param {*} callback returns response
    */
   get_tag_services(callback) {
@@ -163,7 +162,6 @@ module.exports = class Client {
 
   /**
    * Ask the client about a URL's files.
-   * __(not yet enabled)__
    * @param {*} url url you want to check
    * @param {*} callback returns response
    */
@@ -200,43 +198,31 @@ module.exports = class Client {
 
   /**
    * Tell the client to import a file.
-   * TODO: should be able to pass bytes as well
-   * __(not yet enabled)__
+   * supply a json with either bytes : *file bytes* 
+   * or path: *file path*
    * @param {*} file path to the file
    * @param {*} callback returns response
    */
-  add_file_path(file, callback) {
+  add_file(passed_options, callback) {
     this.build_call(
       'POST',
       ENDPOINTS.ADD_FILE,
       callback,
-      {
-        json: {
-          path: file,
-        },
-      }
+      'path' in passed_options ? 
+        {
+          json: {
+            path: passed_options.path,
+          },
+        }
+        :
+        {
+          headers: {
+            'Content-Type': 'application/octet-stream',
+          },
+          data: passed_options.bytes,
+        }
     );
   }
-
-  /**
-   * Tell the client to import a file.
-   * @param {*} bytes file bytes
-   * @param {*} callback returns response
-   */
-  add_file_bytes(bytes, callback) {
-    this.build_call(
-      'POST',
-      ENDPOINTS.ADD_FILE,
-      callback,
-      {
-        headers: {
-          'Content-Type': 'application/octet-stream',
-        },
-        data: bytes,
-      }
-    );
-  }
-
 
   /**
    * Tell the client to 'import' a URL. This triggers the exact same routine as drag-and-dropping a text URL onto the main client window.
