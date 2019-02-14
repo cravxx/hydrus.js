@@ -6,12 +6,4 @@ class GenericApiError extends Error {
   }
 }
 
-const isJSON = (str, callback) => {
-  try {
-    callback(JSON.parse(str));
-  } catch (e) {
-    callback(null);
-  }
-};
-
-module.exports = { GenericApiError, isJSON };
+module.exports = { GenericApiError };

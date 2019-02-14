@@ -1,5 +1,5 @@
 const rp = require('request-promise');
-const {GenericApiError, isJSON} = require('./util.js');
+const { GenericApiError } = require('./util.js');
 
 const default_api_address = 'http://127.0.0.1:45869';
 
@@ -67,19 +67,23 @@ module.exports = class Client {
   get PERMISSIONS() {
     return PERMISSIONS;
   }
+  
 
   build_call(method, endpoint, callback, options = {}) {
     if (this.access_key !== '' && !('headers' in options))
       options.headers = {'Hydrus-Client-API-Access-Key': this.access_key};
     rp({
       method: method,
+      simple: true,
+      timeout: 5000,
+      json: true,
       uri: this.address + endpoint,
       headers: options.headers,
       qs: options.queries,
-      json: options.json,
+      body: options.json,
     })
       .then((response) => {
-        callback(response);        
+        callback(response);
       })
       .catch((err) => {
         throw new GenericApiError(err);
@@ -98,15 +102,7 @@ module.exports = class Client {
     this.build_call(
       'GET',
       ENDPOINTS.REQUEST_PERMISSIONS,
-      (body) => {
-        isJSON(body, (result) => {
-          if (result != null) {
-            callback(result);
-          } else {
-            callback(body);
-          }
-        });
-      },
+      callback,
       {
         queries: {
           name: name,
@@ -127,15 +123,7 @@ module.exports = class Client {
     this.build_call(
       'GET',
       ENDPOINTS.VERIFY_KEY,
-      (body) => {
-        isJSON(body, (result) => {
-          if (result != null) {
-            callback(result);
-          } else {
-            callback(body);
-          }
-        });
-      },
+      callback,
       options
     );
   }
@@ -147,17 +135,9 @@ module.exports = class Client {
    */
   get_tag_services(callback) {
     this.build_call(
-      'GET', 
-      ENDPOINTS.TAG_SERVICES, 
-      (body) => {
-        isJSON(body, (result) => {
-          if (result != null) {
-            callback(result);
-          } else {
-            callback(body);
-          }
-        });
-      }
+      'GET',
+      ENDPOINTS.TAG_SERVICES,
+      callback
     );
   }
 
@@ -171,15 +151,7 @@ module.exports = class Client {
     this.build_call(
       'GET',
       ENDPOINTS.URL_INFO,
-      (body) => {
-        isJSON(body, (result) => {
-          if (result != null) {
-            callback(result);
-          } else {
-            callback(body);
-          }
-        });
-      },
+      callback,
       {
         queries: {
           url: url,
@@ -197,15 +169,7 @@ module.exports = class Client {
     this.build_call(
       'GET',
       ENDPOINTS.URL_INFO,
-      (body) => {
-        isJSON(body, (result) => {
-          if (result != null) {
-            callback(result);
-          } else {
-            callback(body);
-          }
-        });
-      },
+      callback,
       {
         queries: {
           url: url,
@@ -225,15 +189,7 @@ module.exports = class Client {
     this.build_call(
       'POST',
       ENDPOINTS.ADD_FILE,
-      (body) => {
-        isJSON(body, (result) => {
-          if (result != null) {
-            callback(result);
-          } else {
-            callback(body);
-          }
-        });
-      },
+      callback,
       {
         json: {
           path: file,
@@ -252,15 +208,7 @@ module.exports = class Client {
     this.build_call(
       'POST',
       ENDPOINTS.ADD_URL,
-      (body) => {
-        isJSON(body, (result) => {
-          if (result != null) {
-            callback(result);
-          } else {
-            callback(body);
-          }
-        });
-      },
+      callback,
       {
         json: {
           url: url,
@@ -271,20 +219,15 @@ module.exports = class Client {
 
   /**
    * Gets the current API version.
+   * always returns json
+   * (Does not require header)
    * @param {*} callback returns response
    */
   api_version(callback) {
     this.build_call(
-      'GET', 
-      ENDPOINTS.API_VERSION, (body) => {
-        isJSON(body, (result) => {
-          if (result != null) {
-            callback(result);
-          } else {
-            callback(body);
-          }
-        });
-      }
+      'GET',
+      ENDPOINTS.API_VERSION,
+      callback
     );
   }
 };
