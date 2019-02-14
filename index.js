@@ -5,11 +5,12 @@ const default_api_address = 'http://127.0.0.1:45869';
 
 const ENDPOINTS = {
   API_VERSION: '/api_version',
-  VERIFY_KEY: '/verify_access_key',
-  URL_INFO: '/add_urls/get_url_info',
+  VERIFY_ACCESS_KEY: '/verify_access_key',
+  GET_URL_INFO: '/add_urls/get_url_info',
   ADD_URL: '/add_urls/add_url',
-  REQUEST_PERMISSIONS: '/request_new_permissions',
-  TAG_SERVICES: '/add_tags/get_tag_services',
+  REQUEST_NEW_PERMISSIONS: '/request_new_permissions',
+  GET_TAG_SERVICES: '/add_tags/get_tag_services',
+  GET_URL_FILES: '/add_urls/get_url_files',
   FILE_SEARCH: '',
   FILE_METADATA: '',
   FILE: '',
@@ -101,7 +102,7 @@ module.exports = class Client {
   request_new_permissions(name, permissions, callback) {
     this.build_call(
       'GET',
-      ENDPOINTS.REQUEST_PERMISSIONS,
+      ENDPOINTS.REQUEST_NEW_PERMISSIONS,
       callback,
       {
         queries: {
@@ -122,7 +123,7 @@ module.exports = class Client {
       (key !== '') ? {headers: {'Hydrus-Client-API-Access-Key': key}} : {};
     this.build_call(
       'GET',
-      ENDPOINTS.VERIFY_KEY,
+      ENDPOINTS.VERIFY_ACCESS_KEY,
       callback,
       options
     );
@@ -136,7 +137,7 @@ module.exports = class Client {
   get_tag_services(callback) {
     this.build_call(
       'GET',
-      ENDPOINTS.TAG_SERVICES,
+      ENDPOINTS.GET_TAG_SERVICES,
       callback
     );
   }
@@ -150,7 +151,7 @@ module.exports = class Client {
   get_url_files(url, callback) {
     this.build_call(
       'GET',
-      ENDPOINTS.URL_INFO,
+      ENDPOINTS.GET_URL_FILES,
       callback,
       {
         queries: {
@@ -168,7 +169,7 @@ module.exports = class Client {
   get_url_info(url, callback) {
     this.build_call(
       'GET',
-      ENDPOINTS.URL_INFO,
+      ENDPOINTS.GET_URL_INFO,
       callback,
       {
         queries: {

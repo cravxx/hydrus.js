@@ -10,10 +10,15 @@ currently implements v1 api functions (working towards [v2](https://hydrusnetwor
 | Function | Implemented? |
 | --- | --- |
 | API_VERSION | ✔️ |
-| VERIFY_KEY | ✔️ |
-| URL_INFO | ✔️ |
+| REQUEST_NEW_PERMISSIONS | ✔️ |
+| VERIFY_ACCESS_KEY | ✔️ |
+| GET_URL_INFO | ✔️ |
+| GET_URL_FILES | ✔️ |
+| GET_TAG_SERVICES | ✔️ |
 | ADD_URL | ✔️ |
-| REQUEST_PERMISSIONS | ✔️ |
+| ADD_FILE | ⭕ |
+
+ADD_FILE works when sending a path, but I haven't added support to send as bytes yet.
 
 ## example
 ```javascript
