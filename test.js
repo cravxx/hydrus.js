@@ -1,3 +1,4 @@
+var fs = require('fs');
 var Hydrus_Api = require('./index.js');
 
 const readline = require('readline').createInterface({
@@ -47,8 +48,20 @@ readline.question('Enter an api access key to perform tests: ', key => {
     }
   );
 
-  C.add_file(
-    'C:/example/path/file.png',
+  fs.readFile('example path', function(err, data) {
+    if (err) throw err;
+
+    C.add_file_bytes(
+      data,
+      (response) => {
+        console.log(response);
+        console.log('\n\n');
+      }
+    );
+  });
+
+  C.add_file_path(
+    'example path',
     (response) => {
       console.log(response);
       console.log('\n\n');

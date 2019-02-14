@@ -5,7 +5,7 @@
 
 node.js module for interacting with the hydrus network api
 
-currently implements v1 api functions (working towards [v2](https://hydrusnetwork.github.io/hydrus/help/client_api.html) )
+currently implements [all api functions](https://hydrusnetwork.github.io/hydrus/help/client_api.html) )
 
 | Function | Implemented? |
 | --- | --- |
@@ -16,9 +16,8 @@ currently implements v1 api functions (working towards [v2](https://hydrusnetwor
 | GET_URL_FILES | ✔️ |
 | GET_TAG_SERVICES | ✔️ |
 | ADD_URL | ✔️ |
-| ADD_FILE | ⭕ |
+| ADD_FILE | ✔️ |
 
-ADD_FILE works when sending a path, but I haven't added support to send as bytes yet.
 
 ## example
 ```javascript

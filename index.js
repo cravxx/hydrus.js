@@ -71,8 +71,13 @@ module.exports = class Client {
   
 
   build_call(method, endpoint, callback, options = {}) {
-    if (this.access_key !== '' && !('headers' in options))
-      options.headers = {'Hydrus-Client-API-Access-Key': this.access_key};
+    if (this.access_key !== '') {
+      if (!(('headers' in options) && 'Hydrus-Client-API-Access-Key' in options.headers)) {
+        if (!('headers' in options))
+          options['headers'] = {};
+        options.headers['Hydrus-Client-API-Access-Key'] = this.access_key;
+      }
+    }
     rp({
       method: method,
       simple: true,
@@ -81,7 +86,7 @@ module.exports = class Client {
       uri: this.address + endpoint,
       headers: options.headers,
       qs: options.queries,
-      body: options.json,
+      body: 'data' in options ? options.data : options.json,
     })
       .then((response) => {
         callback(response);
@@ -186,7 +191,7 @@ module.exports = class Client {
    * @param {*} file path to the file
    * @param {*} callback returns response
    */
-  add_file(file, callback) {
+  add_file_path(file, callback) {
     this.build_call(
       'POST',
       ENDPOINTS.ADD_FILE,
@@ -195,6 +200,25 @@ module.exports = class Client {
         json: {
           path: file,
         },
+      }
+    );
+  }
+
+  /**
+   * Tell the client to import a file.
+   * @param {*} bytes file bytes
+   * @param {*} callback returns response
+   */
+  add_file_bytes(bytes, callback) {
+    this.build_call(
+      'POST',
+      ENDPOINTS.ADD_FILE,
+      callback,
+      {
+        headers: {
+          'Content-Type': 'application/octet-stream',
+        },
+        data: bytes,
       }
     );
   }
