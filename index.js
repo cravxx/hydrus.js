@@ -1,24 +1,28 @@
 const rp = require('request-promise');
-const { GenericApiError, ApiVersionMismatchError } = require('./util.js');
+const { GenericApiError, NotEnoughArgumentsError, ApiVersionMismatchError } = require('./util.js');
 
 const default_api_address = 'http://127.0.0.1:45869';
 
-const api_version = 1;
+const api_version = 2;
 
 const ENDPOINTS = {
+
+  // Access Management
   API_VERSION: '/api_version',
+  REQUEST_NEW_PERMISSIONS: '/request_new_permissions',
   VERIFY_ACCESS_KEY: '/verify_access_key',
+  // Adding Files
+  ADD_FILE: '/add_files/add_file',
+  // Adding Tags
+  CLEAN_TAGS: '/add_tags/clean_tags',
+  GET_TAG_SERVICES: '/add_tags/get_tag_services',
+  ADD_TAGS: '/add_tags/add_tags',
+  // Adding URLs
+  GET_URL_FILES: '/add_urls/get_url_files',
   GET_URL_INFO: '/add_urls/get_url_info',
   ADD_URL: '/add_urls/add_url',
-  REQUEST_NEW_PERMISSIONS: '/request_new_permissions',
-  GET_TAG_SERVICES: '/add_tags/get_tag_services',
-  GET_URL_FILES: '/add_urls/get_url_files',
-  FILE_SEARCH: '',
-  FILE_METADATA: '',
-  FILE: '',
-  THUMBNAIL: '',
-  ADD_TAGS: '',
-  ADD_FILE: '/add_files/add_file',
+  ASSOCIATE_URL: '/add_urls/associate_url',
+  
 };
 
 const FILE_STATUS = {
@@ -100,7 +104,7 @@ module.exports = class Client {
       body: 'data' in options ? options.data : options.json,
     })
       .then((response) => {
-        callback(response);
+        callback(response === undefined ? '' : response);
       })
       .catch((err) => {
         if (err instanceof ApiVersionMismatchError)
@@ -108,6 +112,23 @@ module.exports = class Client {
         else
           console.error(new GenericApiError(err));
       });
+  }
+
+  //
+  // Access Management
+
+  /**
+   * Gets the current API version.
+   * always returns json
+   * (Does not require header)
+   * @param {*} callback returns response
+   */
+  api_version(callback) {
+    this.build_call(
+      'GET',
+      ENDPOINTS.API_VERSION,
+      callback
+    );
   }
 
   /**
@@ -148,6 +169,40 @@ module.exports = class Client {
     );
   }
 
+  //
+  // Adding Files
+
+  /**
+   * Tell the client to import a file.
+   * supply a json with either bytes : *file bytes* 
+   * or path: *file path*
+   * @param {*} file path to the file
+   * @param {*} callback returns response
+   */
+  add_file(passed_options, callback) {
+    this.build_call(
+      'POST',
+      ENDPOINTS.ADD_FILE,
+      callback,
+      'path' in passed_options ? 
+        {
+          json: {
+            path: passed_options.path,
+          },
+        }
+        :
+        {
+          headers: {
+            'Content-Type': 'application/octet-stream',
+          },
+          data: passed_options.bytes,
+        }
+    );
+  }
+
+  //
+  // Adding Tags
+
   /**
    * Ask the client about its tag services
    * @param {*} callback returns response
@@ -159,6 +214,9 @@ module.exports = class Client {
       callback
     );
   }
+
+  //
+  // Adding URLs
 
   /**
    * Ask the client about a URL's files.
@@ -197,34 +255,6 @@ module.exports = class Client {
   }
 
   /**
-   * Tell the client to import a file.
-   * supply a json with either bytes : *file bytes* 
-   * or path: *file path*
-   * @param {*} file path to the file
-   * @param {*} callback returns response
-   */
-  add_file(passed_options, callback) {
-    this.build_call(
-      'POST',
-      ENDPOINTS.ADD_FILE,
-      callback,
-      'path' in passed_options ? 
-        {
-          json: {
-            path: passed_options.path,
-          },
-        }
-        :
-        {
-          headers: {
-            'Content-Type': 'application/octet-stream',
-          },
-          data: passed_options.bytes,
-        }
-    );
-  }
-
-  /**
    * Tell the client to 'import' a URL. This triggers the exact same routine as drag-and-dropping a text URL onto the main client window.
    * @param {*} url the url you want to import
    * @param {*} callback returns response
@@ -243,16 +273,56 @@ module.exports = class Client {
   }
 
   /**
-   * Gets the current API version.
-   * always returns json
-   * (Does not require header)
-   * @param {*} callback returns response
+   * Manage which URLs the client considers to be associated with which files.
+   * @param {*} actions contains 'to_add' or 'to_delete' actions for urls. can be single urls or list
+   * @param {*} hash the hash of the file you want to edit
    */
-  api_version(callback) {
+  associate_url(actions, _hash, callback) {
+    var json = {};
+    if (!('to_add' in actions || 'to_delete' in actions)) {
+      throw new NotEnoughArgumentsError('You must have at least one \'to_delete\' or \'to_add\' argument');
+    } else {
+      if ('to_add' in actions) {
+        if (typeof actions.to_add === 'object') {
+          if (Object.keys(actions.to_add).length > 1) {
+            json.urls_to_add = actions.to_add;
+          } else {
+            json.url_to_add = actions.to_add[0];
+          }
+        } else {
+          json.url_to_add = actions.to_add;
+        }
+      }
+      if ('to_delete' in actions) {
+        if (typeof actions.to_delete === 'object') {
+          if (Object.keys(actions.to_delete).length > 1) {
+            json.urls_to_delete = actions.to_delete;
+          } else {
+            json.url_to_delete = actions.to_delete[0];
+          }          
+        } else {
+          json.url_to_delete = actions.to_delete;
+        }
+      }
+      if (typeof _hash === 'object') {
+        if (Object.keys(_hash).length > 1) {
+          json.hashes = _hash;
+        } else {
+          json.hash = _hash[0];
+        }
+      } else {
+        json.hash = _hash;
+      }
+    }
+    console.log(JSON.stringify(json, null, 4));
     this.build_call(
-      'GET',
-      ENDPOINTS.API_VERSION,
-      callback
+      'POST',
+      ENDPOINTS.ASSOCIATE_URL,
+      callback,
+      {
+        json,
+      }
     );
   }
+  
 };

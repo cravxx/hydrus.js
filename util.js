@@ -6,6 +6,14 @@ class GenericApiError extends Error {
   }
 }
 
+class NotEnoughArgumentsError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = this.constructor.name;
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
 class ApiVersionMismatchError extends Error {
   constructor(message) {
     super(message);
@@ -14,4 +22,4 @@ class ApiVersionMismatchError extends Error {
   }
 }
 
-module.exports = { GenericApiError, ApiVersionMismatchError };
+module.exports = { GenericApiError, NotEnoughArgumentsError, ApiVersionMismatchError };

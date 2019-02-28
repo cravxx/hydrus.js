@@ -1,5 +1,5 @@
 var chai = require('chai');
-var { assert } = chai;
+var { assert, describe, context, it } = chai;
 
 
 var Hydrus_Api = require('./index.js');
