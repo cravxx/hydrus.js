@@ -34,6 +34,15 @@ const FILE_STATUS = {
   VETOED: 7,
 };
 
+const TAG_ACTIONS = {
+  ADD_TO_LOCAL: 0,
+  DELETE_FROM_LOCAL: 1,
+  PEND_TO_REPOSITORY: 2,
+  RESCIND_PEND_FROM_REPOSITORY: 3,
+  PETITION_FROM_REPOSITORY: 4,
+  RESCIND_A_PETITION_FROM_REPOSITORY: 5
+}
+
 const URL_TYPE = {
   POST_URL: 0,
   FILE_URL: 2,
@@ -74,6 +83,10 @@ module.exports = class Client {
 
   get FILE_STATUS() {
     return FILE_STATUS;
+  }
+
+  get TAG_ACTIONS() {
+    return TAG_ACTIONS;
   }
 
   get URL_TYPE() {
@@ -179,15 +192,15 @@ module.exports = class Client {
    * @param {*} file path to the file
    * @param {*} callback returns response
    */
-  add_file(passed_options, callback) {
+  add_file(options, callback) {
     this.build_call(
       'POST',
       ENDPOINTS.ADD_FILE,
       callback,
-      'path' in passed_options ? 
+      'path' in options ? 
         {
           json: {
-            path: passed_options.path,
+            path: options.path,
           },
         }
         :
@@ -195,13 +208,68 @@ module.exports = class Client {
           headers: {
             'Content-Type': 'application/octet-stream',
           },
-          data: passed_options.bytes,
+          data: options.bytes,
         }
     );
   }
 
   //
   // Adding Tags
+
+  /**
+   * 
+   * @param {*} actions (an Object of service names to lists of tags to be 'added' to the files) or an  ( Object of service names to content update actions to lists of tags)
+   * @param {*} hash You can use either 'hash' or 'hashes',
+   * @param {*} callback 
+   */
+  add_tags(actions, hash, callback) {
+    var json = {};
+    if (!('service_names_to_tags' in actions || 'service_names_to_actions_to_tags' in actions)) {
+      throw new NotEnoughArgumentsError('You must have at least one \'service_names...\' argument');
+    } else {
+      if (typeof hash === 'object') {
+        if (Object.keys(hash).length > 1) {
+          json.hashes = hash;
+        } else {
+          json.hash = hash[0];
+        }
+      } else {
+        json.hash = hash;
+      }
+      if ('service_names_to_tags' in actions) {
+        json.service_names_to_tags = actions.service_names_to_tags;
+      }
+      if('service_names_to_actions_to_tags' in actions) {
+        json.service_names_to_actions_to_tags = actions.service_names_to_actions_to_tags;
+      }
+    }
+    this.build_call(
+      'POST',
+      ENDPOINTS.ADD_TAGS,
+      callback,
+      {
+        json,
+      }
+    );
+  }
+
+  /**
+   * Ask the client about how it will see certain tags.
+   * @param {*} tags 
+   * @param {*} callback 
+   */
+  clean_tags(tags, callback) {
+    this.build_call(
+      'GET',
+      ENDPOINTS.CLEAN_TAGS,
+      callback,
+      {
+        queries: {
+          tags: JSON.stringify(tags),
+        },
+      }
+    );
+  }
 
   /**
    * Ask the client about its tag services
@@ -277,7 +345,7 @@ module.exports = class Client {
    * @param {*} actions contains 'to_add' or 'to_delete' actions for urls. can be single urls or list
    * @param {*} hash the hash of the file you want to edit
    */
-  associate_url(actions, _hash, callback) {
+  associate_url(actions, hash, callback) {
     var json = {};
     if (!('to_add' in actions || 'to_delete' in actions)) {
       throw new NotEnoughArgumentsError('You must have at least one \'to_delete\' or \'to_add\' argument');
@@ -304,17 +372,16 @@ module.exports = class Client {
           json.url_to_delete = actions.to_delete;
         }
       }
-      if (typeof _hash === 'object') {
-        if (Object.keys(_hash).length > 1) {
-          json.hashes = _hash;
+      if (typeof hash === 'object') {
+        if (Object.keys(hash).length > 1) {
+          json.hashes = hash;
         } else {
-          json.hash = _hash[0];
+          json.hash = hash[0];
         }
       } else {
-        json.hash = _hash;
+        json.hash = hash;
       }
     }
-    console.log(JSON.stringify(json, null, 4));
     this.build_call(
       'POST',
       ENDPOINTS.ASSOCIATE_URL,

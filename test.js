@@ -13,6 +13,16 @@ readline.question('Enter an api access key to perform tests: ', key => {
   var P = C.PERMISSIONS;
   // var U = C.URLTYPE;
   // var I = C.IMPORT_STATUS;
+  // var A = C.TAG_ACTIONS;
+
+  C.clean_tags(['tag'], (response) => {
+    console.log(response);
+  });
+  
+  C.add_tags({}, 'hash', 
+    (response) => {
+        console.log(response);
+  });
 
   C.associate_url({to_add: ['url', 'list'], to_delete:'single url'}, 'hash', (response) => {
     console.log(response);

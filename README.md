@@ -5,7 +5,7 @@
 
 node.js module for interacting with the hydrus network api
 
-currently implements [all v1 api functions](https://hydrusnetwork.github.io/hydrus/help/client_api.html) and one v2 function (npm package not yet updated)
+currently implements [all v2 api functions](https://hydrusnetwork.github.io/hydrus/help/client_api.html)
 
 | Function | Api Version | Implemented? |
 | --- | --- |--- |
@@ -13,9 +13,9 @@ currently implements [all v1 api functions](https://hydrusnetwork.github.io/hydr
 | REQUEST_NEW_PERMISSIONS | 1 | ✔️ |
 | VERIFY_ACCESS_KEY | 1 | ✔️ |
 | ADD_FILE | 1 | ✔️ |
-| CLEAN_TAGS | 2 | ❌ |
+| CLEAN_TAGS | 2 | ✔️ |
 | GET_TAG_SERVICES | 1 | ✔️ |
-| ADD_TAGS | 2 | ❌ |
+| ADD_TAGS | 2 | ✔️ |
 | GET_URL_FILES | 1 | ✔️ |
 | GET_URL_INFO | 1 | ✔️ |
 | ADD_URL | 1 | ✔️ |
