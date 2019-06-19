@@ -1,25 +1,33 @@
 class GenericApiError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = this.constructor.name;
-    Error.captureStackTrace(this, this.constructor);
-  }
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+        Error.captureStackTrace(this, this.constructor);
+    }
 }
 
 class NotEnoughArgumentsError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = this.constructor.name;
-    Error.captureStackTrace(this, this.constructor);
-  }
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+        Error.captureStackTrace(this, this.constructor);
+    }
+}
+
+class IncorrectArgumentsError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+        Error.captureStackTrace(this, this.constructor);
+    }
 }
 
 class ApiVersionMismatchError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = this.constructor.name;
-    // Error.captureStackTrace(this, this.constructor);
-  }
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+        // Error.captureStackTrace(this, this.constructor);
+    }
 }
 
-module.exports = { GenericApiError, NotEnoughArgumentsError, ApiVersionMismatchError };
+module.exports = { GenericApiError, NotEnoughArgumentsError, IncorrectArgumentsError, ApiVersionMismatchError };

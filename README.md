@@ -5,9 +5,10 @@
 
 node.js module for interacting with the hydrus network api
 
-currently implements [all v2 api functions](https://hydrusnetwork.github.io/hydrus/help/client_api.html)
+currently implements [all v3 api functions](https://hydrusnetwork.github.io/hydrus/help/client_api.html)
+up to date with hydrus v342
 
-| Function | Api Version | Implemented? |
+| FUNCTION | API |  |
 | --- | --- |--- |
 | API_VERSION | 1 | ✔️ |
 | REQUEST_NEW_PERMISSIONS | 1 | ✔️ |
@@ -20,6 +21,14 @@ currently implements [all v2 api functions](https://hydrusnetwork.github.io/hydr
 | GET_URL_INFO | 1 | ✔️ |
 | ADD_URL | 1 | ✔️ |
 | ASSOCIATE_URL | 2 | ️️️️️✔️ |
+| GET_PAGES | 7 | ️️️️️❌ |
+| SEARCH_FILES | 3 | ️️️️️✔️ |
+| FILE_METADATA | 4 | ️️️️️❌️ |
+| FILE | 4 | ️️️️️❌ |
+| THUMBNAIL | 4 | ️️️️️❌️ |
+
+
+
 
 ## example
 ```javascript
@@ -31,13 +40,3 @@ client.api_version((response) => {
   console.log(response); // returns { version: 2 }
 });
 ```
-    
-
-## testing
-
-```bash
-npm test
-npm run mocha
-```
-
-and supply a client access key when prompted
