@@ -23,8 +23,8 @@ up to date with hydrus v342
 | ASSOCIATE_URL | 2 | ️️️️️✔️ |
 | GET_PAGES | 7 | ️️️️️❌ |
 | SEARCH_FILES | 3 | ️️️️️✔️ |
-| FILE_METADATA | 4 | ️️️️️❌️ |
-| FILE | 4 | ️️️️️❌ |
+| FILE_METADATA | 4 | ️️️️️✔️ |
+| FILE | 4 | ️️️️️✔️ |
 | THUMBNAIL | 4 | ️️️️️✔️ |
 
 
