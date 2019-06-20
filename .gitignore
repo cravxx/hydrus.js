@@ -1,4 +1,3 @@
 node_modules
 .sonarlint
 .gitattributes
-test.js
