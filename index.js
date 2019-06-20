@@ -64,6 +64,13 @@ const PERMISSIONS = {
     SEARCH_FILES: 3,
 };
 
+const STATUS_NUMBERS = {
+    'CURRENT': 0,
+    'PENDING': 1,
+    'DELETED': 2,
+    'PETITIONED': 3
+}
+
 module.exports = class Client {
     constructor(options) {
         this.access_key = !('key' in options) ? '' : options['key'];
@@ -103,6 +110,9 @@ module.exports = class Client {
         return PERMISSIONS;
     }
 
+    get STATUS_NUMBERS() {
+        return STATUS_NUMBERS;
+    }
 
     build_call(method, endpoint, callback, options = {}) {
         if (this.access_key !== '') {
