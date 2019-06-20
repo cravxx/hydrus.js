@@ -74,15 +74,15 @@ const STATUS_NUMBERS = {
 }
 
 const PAGE_TYPES = {
-    "Gallery downloader": 1,
-    "Simple downloader": 2,
-    "Hard drive import": 3,
-    "Petitions": 5,
-    "File search": 6,
-    "URL downloader": 7,
-    "Duplicates": 8,
-    "Thread watcher": 9,
-    "Page of pages": 10
+    'Gallery downloader': 1,
+    'Simple downloader': 2,
+    'Hard drive import': 3,
+    'Petitions': 5,
+    'File search': 6,
+    'URL downloader': 7,
+    'Duplicates': 8,
+    'Thread watcher': 9,
+    'Page of pages': 10
 }
 
 module.exports = class Client {
