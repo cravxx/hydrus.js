@@ -4,7 +4,7 @@ const { GenericApiError, NotEnoughArgumentsError, IncorrectArgumentsError, ApiVe
 
 const default_api_address = 'http://127.0.0.1:45869';
 
-const api_version = 3;
+const api_version = 7;
 
 const ENDPOINTS = {
 
@@ -23,7 +23,9 @@ const ENDPOINTS = {
     GET_URL_INFO: '/add_urls/get_url_info',
     ADD_URL: '/add_urls/add_url',
     ASSOCIATE_URL: '/add_urls/associate_url',
-    //
+    // Managing Pages
+    GET_PAGES: '/manage_pages/get_pages',
+    // Searching and Fetching Files
     SEARCH_FILES: '/get_files/search_files',
     GET_FILE: '/get_files/file',
     GET_THUMBNAIL: '/get_files/thumbnail',
@@ -65,10 +67,22 @@ const PERMISSIONS = {
 };
 
 const STATUS_NUMBERS = {
-    'CURRENT': 0,
-    'PENDING': 1,
-    'DELETED': 2,
-    'PETITIONED': 3
+    'Current': 0,
+    'Pending': 1,
+    'Deleted': 2,
+    'Petitioned': 3
+}
+
+const PAGE_TYPES = {
+    "Gallery downloader": 1,
+    "Simple downloader": 2,
+    "Hard drive import": 3,
+    "Petitions": 5,
+    "File search": 6,
+    "URL downloader": 7,
+    "Duplicates": 8,
+    "Thread watcher": 9,
+    "Page of pages": 10
 }
 
 module.exports = class Client {
@@ -112,6 +126,10 @@ module.exports = class Client {
 
     get STATUS_NUMBERS() {
         return STATUS_NUMBERS;
+    }
+
+    get PAGE_TYPES() {
+        return PAGE_TYPES;
     }
 
     build_call(method, endpoint, callback, options = {}) {
@@ -339,17 +357,38 @@ module.exports = class Client {
 
     /**
      * Tell the client to 'import' a URL. This triggers the exact same routine as drag-and-dropping a text URL onto the main client window.
-     * @param {*} url the url you want to import
+     * @param {*} actions
      * @param {*} callback returns response
      */
-    add_url(url, callback) {
+    add_url(actions, callback) {
+        var json = {}
+        if (!('url' in actions)) {
+            throw new NotEnoughArgumentsError('You must have a url argument');
+        } else {
+            json.url = actions.url;
+            if ('destination_page_name' in actions) {
+                json.destination_page_name = actions.destination_page_name;
+            }
+            if ('show_destination_page' in actions) {
+                if (typeof actions.show_destination_page === 'boolean') {
+                    json.show_destination_page = actions.show_destination_page;
+                } else {
+                    throw new IncorrectArgumentsError('value of show_destination_page is of improper type: expects boolean')
+                }
+            }
+            if ('service_names_to_tags' in actions) {
+                if (typeof actions.service_names_to_tags === 'object') {
+                    json.service_names_to_tags = actions.service_names_to_tags;
+                } else {
+                    throw new IncorrectArgumentsError('value of service_names_to_tags is of improper type: expects object')
+                }
+            }
+        }
         this.build_call(
             'POST',
             ENDPOINTS.ADD_URL,
             callback, {
-                json: {
-                    url: url,
-                },
+                json,
             }
         );
     }
@@ -534,6 +573,18 @@ module.exports = class Client {
             callback, {
                 queries,
             }
+        );
+    }
+
+    /**
+     * Get the page structure of the current UI session.
+     * @param {*} callback returns response
+     */
+    get_pages(callback) {
+        this.build_call(
+            'GET',
+            ENDPOINTS.GET_PAGES,
+            callback
         );
     }
 
