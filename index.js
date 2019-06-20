@@ -25,6 +25,7 @@ const ENDPOINTS = {
     ASSOCIATE_URL: '/add_urls/associate_url',
     //
     SEARCH_FILES: '/get_files/search_files',
+    GET_THUMBNAIL: '/get_files/thumbnail',
 
 };
 
@@ -430,6 +431,32 @@ module.exports = class Client {
                     'system_inbox': system_inbox,
                     'system_archive': system_archive
                 },
+            }
+        );
+    }
+
+    /**
+     * Get a file's thumbnail.
+     * @param {*} actions
+     * @param {*} callback 
+     */
+    get_thumbnail(actions, callback) {
+        var queries = {}
+        if (('file_id' in actions) && ('hash' in actions)) {
+            throw new IncorrectArgumentsError('only one argument is required, choose either file_id or hash');
+        } else {
+            if ('file_id' in actions) {
+                queries.file_id = actions.file_id;
+            }
+            if ('hash' in actions) {
+                queries.hash = actions.hash;
+            }
+        }
+        this.build_call(
+            'GET',
+            ENDPOINTS.GET_THUMBNAIL,
+            callback, {
+                queries,
             }
         );
     }

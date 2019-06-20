@@ -107,5 +107,12 @@ readline.question('Enter an api access key to perform tests: ', key => {
         }
     );
 
+    C.get_thumbnail({
+        file_id: "9094346"
+    }, (response) => {
+        console.log(response);
+        console.log('\n\n');
+    })
+
     readline.close();
 });
