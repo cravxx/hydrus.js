@@ -25,7 +25,7 @@ up to date with hydrus v342
 | SEARCH_FILES | 3 | ️️️️️✔️ |
 | FILE_METADATA | 4 | ️️️️️❌️ |
 | FILE | 4 | ️️️️️❌ |
-| THUMBNAIL | 4 | ️️️️️❌️ |
+| THUMBNAIL | 4 | ️️️️️✔️ |
 
 
 
