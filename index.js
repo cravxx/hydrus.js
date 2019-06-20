@@ -25,7 +25,9 @@ const ENDPOINTS = {
     ASSOCIATE_URL: '/add_urls/associate_url',
     //
     SEARCH_FILES: '/get_files/search_files',
+    GET_FILE: '/get_files/file',
     GET_THUMBNAIL: '/get_files/thumbnail',
+    GET_FILE_METADATA: '/get_files/file_metadata',
 
 };
 
@@ -431,6 +433,70 @@ module.exports = class Client {
                     'system_inbox': system_inbox,
                     'system_archive': system_archive
                 },
+            }
+        );
+    }
+
+    /**
+     * Get a file's metadata
+     * @param {*} actions
+     * @param {*} callback 
+     */
+    get_file_metadata(actions, callback) {
+        var queries = {}
+        if (('file_ids' in actions) && ('hashes' in actions)) {
+            throw new IncorrectArgumentsError('only one argument is required, choose either file_ids or hashes');
+        } else {
+            if ('file_ids' in actions) {
+                if (typeof actions.file_ids === 'object') {
+                    queries.file_ids = JSON.stringify(actions.file_ids);
+                } else {
+                    throw new IncorrectArgumentsError('value of file_ids is of improper type: expects list')
+                }
+            }
+            if ('hashes' in actions) {
+                if (typeof actions.hashes === 'object') {
+                    queries.hashes = JSON.stringify(actions.hashes);
+                } else {
+                    throw new IncorrectArgumentsError('value of hashes is of improper type: expects list')
+                }
+            }
+            if ('only_return_identifiers' in actions) {
+                queries.only_return_identifiers = actions.only_return_identifiers;
+            }
+        }
+        console.log(queries);
+        this.build_call(
+            'GET',
+            ENDPOINTS.GET_FILE_METADATA,
+            callback, {
+                queries,
+            }
+        );
+    }
+
+    /**
+     * Get a file
+     * @param {*} actions
+     * @param {*} callback 
+     */
+    get_file(actions, callback) {
+        var queries = {}
+        if (('file_id' in actions) && ('hash' in actions)) {
+            throw new IncorrectArgumentsError('only one argument is required, choose either file_id or hash');
+        } else {
+            if ('file_id' in actions) {
+                queries.file_id = actions.file_id;
+            }
+            if ('hash' in actions) {
+                queries.hash = actions.hash;
+            }
+        }
+        this.build_call(
+            'GET',
+            ENDPOINTS.GET_FILE,
+            callback, {
+                queries,
             }
         );
     }
