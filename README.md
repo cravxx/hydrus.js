@@ -5,11 +5,12 @@
 
 node.js module for interacting with the hydrus network api
 
-currently implements [all v7 api functions](https://hydrusnetwork.github.io/hydrus/help/client_api.html)
+currently implements [all v8 api functions](https://hydrusnetwork.github.io/hydrus/help/client_api.html)
 
 | FUNCTION | API |  |
 | --- | --- |--- |
 | API_VERSION | 1 | ✔️ |
+| SESSION_KEY | 8 | ✔️ |
 | REQUEST_NEW_PERMISSIONS | 1 | ✔️ |
 | VERIFY_ACCESS_KEY | 1 | ✔️ |
 | ADD_FILE | 1 | ✔️ |
@@ -36,6 +37,6 @@ var client = new hydrusjs({
   key: 'eb79e9e2a40dddd159299408db072ed6e6573d488b50db499f70a211ba1fa1da',
 });
 client.api_version((response) => {
-  console.log(response); // returns { version: 2 }
+  console.log(response); // returns { version: 8 }
 });
 ```

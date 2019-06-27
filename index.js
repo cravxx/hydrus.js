@@ -1,15 +1,16 @@
 const rp = require('request-promise');
-require('request-promise').debug = true
+
 const { GenericApiError, NotEnoughArgumentsError, IncorrectArgumentsError, ApiVersionMismatchError } = require('./util.js');
 
 const default_api_address = 'http://127.0.0.1:45869';
 
-const api_version = 7;
+const api_version = 8;
 
 const ENDPOINTS = {
 
     // Access Management
     API_VERSION: '/api_version',
+    SESSION_KEY: '/session_key',
     REQUEST_NEW_PERMISSIONS: '/request_new_permissions',
     VERIFY_ACCESS_KEY: '/verify_access_key',
     // Adding Files
@@ -87,17 +88,16 @@ const PAGE_TYPES = {
 
 module.exports = class Client {
     constructor(options) {
-        this.access_key = !('key' in options) ? '' : options['key'];
         this.address = !('address' in options) ? this.default_api_address : options['address'];
+        this.access_key = !('key' in options) ? '' : options['key'];
 
-        this.api_version((res) => {
-            if (res.version > api_version) {
-                throw new ApiVersionMismatchError(`You are using an older version of hydrus.js (${api_version}) that may not work with the newer api (${res.version}). Please check if there is an update available!`);
-            } else if (api_version > res.version) {
-                throw new ApiVersionMismatchError(`This version of hydrus.js (${api_version}) is built for a newer version of the api than what your hydrus installation is currently using (${res.version}). Please update your hydrus.`);
+        this.api_version((response) => {
+            if (response.version > api_version) {
+                throw new ApiVersionMismatchError(`You are using an older version of hydrus.js (${api_version}) that may not work with the newer api (${response.version}). Please check if there is an update available!`);
+            } else if (api_version > response.version) {
+                throw new ApiVersionMismatchError(`This version of hydrus.js (${api_version}) is built for a newer version of the api than what your hydrus installation is currently using (${response.version}). Please update your hydrus.`);
             }
         });
-
     }
 
     get default_api_address() {
@@ -153,11 +153,11 @@ module.exports = class Client {
             .then((response) => {
                 callback(response === undefined ? '' : response);
             })
-            .catch((err) => {
-                if (err instanceof ApiVersionMismatchError)
-                    console.error(err.message);
+            .catch((error) => {
+                if (error instanceof ApiVersionMismatchError)
+                    console.error(error.message);
                 else
-                    console.error(new GenericApiError(err));
+                    console.error(new GenericApiError(error));
             });
     }
 
@@ -174,6 +174,20 @@ module.exports = class Client {
         this.build_call(
             'GET',
             ENDPOINTS.API_VERSION,
+            callback
+        );
+    }
+
+    /**
+     * Gets a session key
+     * always returns json
+     * (Does not require header)
+     * @param {*} callback returns response
+     */
+    session_key(callback) {
+        this.build_call(
+            'GET',
+            ENDPOINTS.SESSION_KEY,
             callback
         );
     }
@@ -368,6 +382,9 @@ module.exports = class Client {
             json.url = actions.url;
             if ('destination_page_name' in actions) {
                 json.destination_page_name = actions.destination_page_name;
+            }
+            if ('destination_page_key' in actions) {
+                json.destination_page_key = actions.destination_page_key;
             }
             if ('show_destination_page' in actions) {
                 if (typeof actions.show_destination_page === 'boolean') {
