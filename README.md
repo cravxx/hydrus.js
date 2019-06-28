@@ -1,11 +1,11 @@
 
 # hydrus.js
 
-[![npm version](https://badge.fury.io/js/hydrus.js.svg)](https://www.npmjs.com/package/hydrus.js)
+[![npm version](https://badge.fury.io/js/hydrus.js.svg)](https://www.npmjs.com/package/hydrus.js) 
+[![hydrus api](https://img.shields.io/badge/client%20api-8-FF9400.svg)](https://hydrusnetwork.github.io/hydrus/help/client_api.html)
+[![hydrus](https://img.shields.io/badge/hydrus-357-FF9400.svg)](https://github.com/hydrusnetwork/hydrus/releases/)
 
 node.js module for interacting with the hydrus network api
-
-currently implements [all v8 api functions](https://hydrusnetwork.github.io/hydrus/help/client_api.html)
 
 | FUNCTION | API |  |
 | --- | --- |--- |
@@ -27,13 +27,10 @@ currently implements [all v8 api functions](https://hydrusnetwork.github.io/hydr
 | FILE | 4 | ️️️️️✔️ |
 | THUMBNAIL | 4 | ️️️️️✔️ |
 
-
-
-
 ## example
 ```javascript
-const hydrusjs = require("hydrus.js")
-var client = new hydrusjs({
+const hydrus = require("hydrus.js")
+var client = new hydrus({
   key: 'eb79e9e2a40dddd159299408db072ed6e6573d488b50db499f70a211ba1fa1da',
 });
 client.api_version((response) => {

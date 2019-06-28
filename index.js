@@ -1,7 +1,5 @@
 const rp = require('request-promise');
 
-const { GenericApiError, NotEnoughArgumentsError, IncorrectArgumentsError, ApiVersionMismatchError } = require('./util.js');
-
 const default_api_address = 'http://127.0.0.1:45869';
 
 const api_version = 8;
@@ -84,6 +82,38 @@ const PAGE_TYPES = {
     'Duplicates': 8,
     'Thread watcher': 9,
     'Page of pages': 10
+}
+
+class GenericApiError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+        Error.captureStackTrace(this, this.constructor);
+    }
+}
+
+class NotEnoughArgumentsError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+        Error.captureStackTrace(this, this.constructor);
+    }
+}
+
+class IncorrectArgumentsError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+        Error.captureStackTrace(this, this.constructor);
+    }
+}
+
+class ApiVersionMismatchError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+        // Error.captureStackTrace(this, this.constructor);
+    }
 }
 
 module.exports = class Client {
