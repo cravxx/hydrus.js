@@ -12,17 +12,14 @@
         "npm"
     ],
     "main": "index.js",
-    "scripts": {
-        "test": "node test"
-    },
     "author": "cravxx",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cravxx/hydrus.js.git"
+    },
     "license": "MIT",
     "dependencies": {
         "request": "^2.88.0",
         "request-promise": "^4.2.2"
-    },
-    "devDependencies": {
-        "eslint": "^5.13.0",
-        "eslint-config-strongloop": "^2.1.0"
     }
 }
