@@ -1,7 +1,8 @@
 
 # hydrus.js
 
-[![npm version](https://badge.fury.io/js/hydrus.js.svg)](https://www.npmjs.com/package/hydrus.js) 
+[![NPM](https://nodei.co/npm/hydrus.js.png?compact=true)](https://nodei.co/npm/hydrus.js/)
+
 [![hydrus api](https://img.shields.io/badge/client%20api-8-FF9400.svg)](https://hydrusnetwork.github.io/hydrus/help/client_api.html)
 [![hydrus](https://img.shields.io/badge/hydrus-357-FF9400.svg)](https://github.com/hydrusnetwork/hydrus/releases/)
 
