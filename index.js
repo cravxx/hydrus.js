@@ -2,7 +2,7 @@ const rp = require('request-promise');
 
 const default_api_address = 'http://127.0.0.1:45869';
 
-const api_version = 8;
+const api_version = 9;
 
 const ENDPOINTS = {
 
@@ -24,6 +24,7 @@ const ENDPOINTS = {
     ASSOCIATE_URL: '/add_urls/associate_url',
     // Managing Pages
     GET_PAGES: '/manage_pages/get_pages',
+    FOCUS_PAGE: '/manage_pages/focus_page',
     // Searching and Fetching Files
     SEARCH_FILES: '/get_files/search_files',
     GET_FILE: '/get_files/file',
@@ -631,6 +632,26 @@ module.exports = class Client {
             'GET',
             ENDPOINTS.GET_PAGES,
             callback
+        );
+    }
+
+    /**
+     * 'Show' a page in the main GUI, making it the current page in view. If it is already the current page, no change is made.
+     * @param {*} callback returns response
+     */
+    focus_page(actions, callback) {
+        var json = {}
+        if ('page_key' in actions) {
+            json.page_key = actions.page_key;
+        } else {
+            throw new IncorrectArgumentsError('page_key argument required');
+        }
+        this.build_call(
+            'POST',
+            ENDPOINTS.FOCUS_PAGE,
+            callback, {
+                json,
+            }
         );
     }
 
