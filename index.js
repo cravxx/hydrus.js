@@ -2,7 +2,7 @@ const rp = require('request-promise');
 
 const default_api_address = 'http://127.0.0.1:45869';
 
-const api_version = 10;
+const api_version = 11;
 
 const ENDPOINTS = {
 
@@ -27,6 +27,7 @@ const ENDPOINTS = {
     SET_COOKIES: '/manage_cookies/set_cookies',
     // Managing Pages
     GET_PAGES: '/manage_pages/get_pages',
+    GET_PAGE_INFO: '/manage_pages/get_page_info',
     FOCUS_PAGE: '/manage_pages/focus_page',
     // Searching and Fetching Files
     SEARCH_FILES: '/get_files/search_files',
@@ -665,6 +666,29 @@ module.exports = class Client {
             'GET',
             ENDPOINTS.GET_PAGES,
             callback
+        );
+    }
+
+    /**
+     * Get information about a specific page.
+     * @param {*} callback returns response
+     */
+    get_page_info(actions, callback) {
+        var queries = {}
+        if (!('page_key' in actions)) {
+            throw new IncorrectArgumentsError('page_key argument required');
+        } else {
+            queries.page_key = actions.page_key;
+            if ('simple' in actions) {
+                queries.simple = actions.simple;
+            }
+        }
+        this.build_call(
+            'GET',
+            ENDPOINTS.GET_PAGE_INFO,
+            callback, {
+                queries,
+            }
         );
     }
 
