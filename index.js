@@ -2,7 +2,7 @@ const rp = require('request-promise');
 
 const default_api_address = 'http://127.0.0.1:45869';
 
-const api_version = 9;
+const api_version = 10;
 
 const ENDPOINTS = {
 
@@ -22,6 +22,9 @@ const ENDPOINTS = {
     GET_URL_INFO: '/add_urls/get_url_info',
     ADD_URL: '/add_urls/add_url',
     ASSOCIATE_URL: '/add_urls/associate_url',
+    // Managing Cookies
+    GET_COOKIES: '/manage_cookies/get_cookies',
+    SET_COOKIES: '/manage_cookies/set_cookies',
     // Managing Pages
     GET_PAGES: '/manage_pages/get_pages',
     FOCUS_PAGE: '/manage_pages/focus_page',
@@ -619,6 +622,36 @@ module.exports = class Client {
             ENDPOINTS.GET_THUMBNAIL,
             callback, {
                 queries,
+            }
+        );
+    }
+
+    /**
+     * Get the cookies for a particular domain.
+     * @param {*} callback returns response
+     */
+    get_cookies(domain, callback) {
+        this.build_call(
+            'GET',
+            ENDPOINTS.GET_COOKIES,
+            callback, {
+                queries: {
+                    'domain': domain,
+                },
+            }
+        );
+    }
+
+    /**
+     * Set some new cookies for the client. This makes it easier to 'copy' a login from a web browser or similar to hydrus if hydrus's login system can't handle the site yet.
+     * @param {*} callback returns response
+     */
+    set_cookies(json, callback) {
+        this.build_call(
+            'POST',
+            ENDPOINTS.SET_COOKIES,
+            callback, {
+                json,
             }
         );
     }
